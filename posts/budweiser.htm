@@ -1,0 +1,56 @@
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en-US" xmlns:fb="https://www.facebook.com/2008/fbml"> 
+	<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# oddjobb: http://ogp.me/ns/fb/oddjobb#">
+	    <meta property="fb:app_id"      content="139514356142393"> 
+	    <meta property="og:type"        content="oddjobb:heineken_beer"> 
+	    <meta property="og:url"         content="http://dev.gullinbursti.cc/projs/oddjob/posts/budweiser.htm"> 
+	    <meta property="og:title"       content="Heineken Beer"> 
+	    <meta property="og:description" content="It is that easy? You Like Heineken Application and you get a free Heineken Beer at 3 locations in Palo Alto."> 
+	    <meta property="og:image"       content="https://s-static.ak.fbcdn.net/images/devsite/attachment_blank.png">
+	    <meta property="og:locale"      content="en_us">
+	
+		<script type="text/javascript">
+			function postShare() {
+				FB.api(
+					'/me/oddjobb:complete&heineken_beer=http://dev.gullinbursti.cc/projs/oddjob/posts/budweiser.htm', 'post', 
+					
+					function(response) {
+						if (!response || response.error)
+				    		alert('Error occurred ['+response.error.message+']');
+						else
+				    		alert('Post was successful! Action ID: ' + response.id);
+					}
+			   );
+			}
+		</script>
+		
+		<style> 
+			h3 {size:24px; font-family:Verdana, Tahoma, sans-serif; color:#666666; border-bottom:1px solid #333333;}
+			hr {height:1px; border-width:0; color:#333333;}
+		</style>
+	</head> 
+
+	<body onload='var t = setTimeout("postShare()", 1875);'>
+		<div id="fb-root"></div>
+		<script src="http://connect.facebook.net/en_US/all.js"></script>
+		
+		<script>
+			FB.init({ 
+				appId:'139514356142393', 
+				cookie:true,                               
+				status:true, 
+				xfbml:true, 
+				oauth:true
+			});
+		</script>
+		
+		<h3>Budweiser</h3> 
+		<div id="#divImg"><img title="Budweiser" src="http://images2.layoutsparks.com/1/172392/new-budweiser-bikini-t5-1.jpg" width="480"/></div>
+		<hr noshade />     
+		
+		<!--
+		<div><fb:add-to-timeline></fb:add-to-timeline></div>
+		<div><fb:activity actions="oddjobb:complete"></fb:activity></div>
+		-->
+		
+	</body> 
+</html>

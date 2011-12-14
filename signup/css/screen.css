@@ -1,0 +1,10 @@
+html, body {margin:0px; padding:0px; font-family: 'Open Sans', sans-serif; background-color:#ffffff;}
+#divMainWrapper {width:100%; margin:0px; padding:0px;}
+#divLogin {width:320px; text-align:right; font-size:0.5em;}
+#tblFormTout {width:320px; text-align:left; border:1px solid #3f3f3f; background-color:#dbdbdb; padding:8px;}
+#tdFormHeader {font-size:0.8em; font-weight:600; text-align:center; margin:8px;}
+#tdFormInfo {font-size:0.7em; text-align:justify; padding-bottom:12px;}
+.tdLabel {width:120px; text-align:left; font-size:0.6em; padding:2px;}
+.tdField {text-align:left; padding:2px;}
+#btnSubmit {width:320px;}
+#spnDisclaim {font-size:0.3em; padding:4px;}

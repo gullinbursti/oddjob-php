@@ -1,0 +1,151 @@
+#friend-finder {
+    position: relative;
+    font-family: "Lucida Grande";
+    z-index: 10;
+}
+
+#friend-finder .friend-finder-input {
+    border: 1px solid #ccc;
+    border-bottom: 1px solid #bbb;
+    padding: 5px;
+    margin: 0px;
+    outline: none;
+    width: 350px;
+    color: #3b5998;
+    font-size: 13px;
+    display: block;
+}
+
+#friend-finder-dropdown {
+    position: absolute;
+    border: 1px solid #ccc;
+    border-top: none;
+    border-bottom: 1px solid #aaa;
+    width: 360px;
+    padding: 0px;
+    margin: 0px;
+    font-size: 11px;
+    background-color: #fff;
+    overflow: hidden;
+    display: none;
+    z-index: 100;
+    left: 0px;
+    -webkit-box-shadow: 0px 3px 0px rgba(0,0,0,0.1);
+    -moz-box-shadow: 0px 3px 0px rgba(0,0,0,0.1);
+}
+
+#friend-finder-count {
+    margin-top: 5px;
+    text-align: center;
+    color: #728AB8;
+    font-weight: bold;
+    clear: both;
+}
+
+#friend-finder-suggestions {
+    max-height: 300px;
+    overflow: hidden;
+}
+
+#friend-finder-selected {
+    border: 1px solid #A1B0CD;
+    border-bottom: none;
+    padding: 5px;
+    padding-bottom: 3px;
+    background-color: #f0f2f7;
+    width: 350px;
+    overflow: hidden;
+    display: none;
+}
+
+.friend-finder-selected-item {
+    float: left;
+    margin-right: 2px;
+    margin-bottom: 2px;
+    padding: 1px 5px;
+    background-color: #D2D7E4;
+    border: 1px solid #A1B0CD;
+    color: #333;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    font-size: 11px;
+    overflow: hidden;
+    zoom: 1;
+}
+
+.friend-finder-selected-text {
+    float: left;
+}
+
+.friend-finder-selected-x {
+    float: left;
+    margin-left: 5px;
+    font-weight: bold;
+    background-image: url(/static/images/x.png);
+    background-repeat: no-repeat;
+    background-position: left center;
+    width: 7px;
+    height: 16px;
+}
+
+.friend-finder-selected-x:hover {
+    background-position: -7px center;
+    cursor: pointer;
+}
+
+#friend-finder-selected img {
+    width: 30px;
+    height: 30px;
+    display: block;
+    float: left;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+.friend-finder-person {
+    padding: 4px 5px;
+    border-top: 1px solid #fff;
+    border-bottom: 1px solid #fff;
+    line-height: 20px;
+    overflow: hidden;
+    color: #555;
+}
+
+.friend-finder-info {
+    float: left;
+    width: 300px;
+    color: #aaa;
+}
+
+.friend-finder-info b {
+    color: #3b5998;
+    display: block;
+}
+
+.friend-finder-hovered {
+    background-color: #6d84b4;
+    color: #fff !important;
+    cursor: pointer;
+    border-top: 1px solid #3b5998;
+    border-bottom: 1px solid #3b5998;
+}
+.friend-finder-hovered b, .friend-finder-hovered .friend-finder-info {
+    color: #fff;
+}
+
+.friend-finder-person img {
+    width: 40px;
+    height: 40px;
+    vertical-align: middle;
+    display: block;
+    float: left;
+    margin-right: 5px;
+}
+
+.friend-finder-check {
+    float: right;
+    width: 10px;
+    margin-right: 5px;
+    display: none;
+}
