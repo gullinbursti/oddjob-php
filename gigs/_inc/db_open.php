@@ -1,7 +1,7 @@
 <?php
 
 // include the db attribs
-require './_consts/db_consts.php';
+//require './_consts/db_consts.php';
 
 // make the connection
 $db_conn = mysql_connect($DB_HOST, $DB_USER, $DB_PASS) or die("Could not connect to database.");

@@ -1,0 +1,10 @@
+html, body {margin:0px; padding:0px; font-family: 'Open Sans', sans-serif; background-color:#fcfcfc; background-image:url('../img/background.jpg'); font-size:14px; font-weight:600; color:#0175EC; line-height:26px;}
+#divMainWrapper {width:100%; margin:0px; padding:0px; vertical-align:top; background-image:url('../img/background.jpg'); }
+#divContainer {width:100%; background-color:#fcfcfc; border-bottom:2px solid #A5A5A5; height:615px;}
+#divSignup {width:420px; text-align:center; padding-top:160px; height:230px; background-color:#fcfcfc;}
+.imgFBAvatar {width:32px; height:32px; border:1px solid #666666; margin-right:12px;}
+.chkFBAvatar {margin-right:24px;}
+#divFooter {padding-top:45px; color:#999999; font-size:11px; font-weight:600;}
+#divFooter a, #divFooter a:active, #divFooter a:visited {color:#999999; text-decoration:none;} 
+#divFooter a:hover {color:#999999; text-decoration:underline;}
+#divAppBtn {padding-top:20px;}

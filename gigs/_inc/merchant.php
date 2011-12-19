@@ -10,12 +10,24 @@ function goMap(address) {
 </script>
 
 <div><img src="<?php echo ($merchant_img); ?>" width="200" height="200" title="" alt="" /></div>
-<div class="tdJobStats">
-  	<img src="#" width="16" height="16" alt="" title="" /><?php echo (rand(2, 10)); ?> DAYS LEFT
-	<img src="#" width="16" height="16" alt="" title="" /><?php echo ($slots_tot); ?> LEFT
-</div><p />
-<div><input type="button" value="Take Job" width="200" /></div><p />
-<div class="divMerchantTerms">Fine Print:Iriure dolor in hendrerit in vulputate velit esse molestie consequat vel illum dolore. Consectetuer adipiscing elit sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat?</div><p />
+<div class="tdJobStats"><p>
+  	<img src="./img/iconTime.png" width="15" height="15" alt="" title="" /><?php echo (rand(2, 10)); ?> DAYS LEFT
+	<img src="./img/iconVoucher.png" width="15" height="17" alt="" title="" /><?php echo ($slots_tot); ?> LEFT
+</p></div><p />
+<div><?php switch ($job_row['action_id']) {
+	case "9":
+   		echo ("<input type=\"button\" value=\"Take Job\" width=\"200\" onclick=\"jobWatch(". $job_id .");\" /></div><p />");
+		break;
+	
+	case "10":
+   		echo ("<input type=\"button\" value=\"Take Job\" width=\"200\" onclick=\"jobRecommend(". $job_id .");\" /></div><p />");
+		break;
+		
+    case "11":
+   		echo ("<input type=\"button\" value=\"Take Job\" width=\"200\" onclick=\"jobChallenge(". $job_id .");\" /></div><p />");
+		break;
+} ?></div>	
+<div class="divMerchantTerms">Fine Print: <?php echo ($offer_row[5]); ?></div><p />
 <div class="tdMerchantInfo">
 	<?php echo ($merchant_name); ?><br />
 	<?php echo ($merchant_addr); ?><br />

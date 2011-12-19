@@ -1,5 +1,5 @@
 html, body {margin:0px; padding:0px; font-family: 'Open Sans', sans-serif; background-color:#ffffff; font-size:0.1em;}
-#divMainWrapper {width:100%; margin:0px; padding:0px; background-image:url('../img/background.jpg');}
+#divMainWrapper {width:100%; margin:0px; padding:0px; background-image:url('../img/background.jpg'); vertical-align:top;}
 			
 #tblHeaderTout {width:100%; height:45px; background-image:url('../img/headerBg.png'); text-align:center; padding:10px; color:#B1B1B1; font-size:10px; font-weight:600;}
 #tblHeaderTout a, #tdHeaderTout a:active, #tdHeaderTout a:visited {color:#0176EA; text-decoration:none;} 
@@ -15,7 +15,10 @@ html, body {margin:0px; padding:0px; font-family: 'Open Sans', sans-serif; backg
 .spnSubHeaderLinks {padding-right:32px;}
 #spnSubHeaderSettings {padding-left:230px;}
 
-#tblFooterTout {width:100%; height:32px; background-color:#7B7B7B; text-align:center; padding:2px; color:#E3E3E3; font-size:0.1em; font-weight:600;}
+#tblFooterTout {padding:2px; font-size:11px; font-weight:600; color:#666666;}
+#tblFooterTout a, #tblFooterTout a:active, #tblFooterTout a:visited {color:#666666; text-decoration:none;} 
+#tblFooterTout a:hover {color:#666666; text-decoration:underline;}
+.tdFooterRow {padding-top:10px;}
 #divNotices {display:none; width:250px; height:24px; background-color:#C9C9C9; vertical-align:middle; text-align:center; border:1px solid #A0A0A0;}
 
 #divCategories {float:left; width:160px; height:290px; margin-top:30px; background-color:#FFFDCD; border:1px solid #999999; font-size:14px; font-weight:600;}
@@ -25,30 +28,41 @@ html, body {margin:0px; padding:0px; font-family: 'Open Sans', sans-serif; backg
 #spnJobTitle {padding-left:4px; font-size:18px; color:#0176EA;}
 #spnJobSubTitle {padding-left:4px; font-size:0.8em; color:#666666;}
 
-#imgFBAvatar {width:32px; height:32px; margin-left:20px;}
+#imgFBAvatar {width:32px; height:32px; margin-left:10px;}
 
 .divPreview {width:320px;}
 #divComment {width:700px; text-align:left; margin-top:40px;}
 #spnAppInfo {font-size:0.6em; padding-left:4px;}
 #divFBUsers {width:620px; height:64px; margin-top:32px; border-top:1px solid #A0A0A0;}
 
-.divMerchantTerms {font-size:10px; text-align:justify; width:215px;}
+.tdSocialStats {color:#7A7A7A; font-size:10px; font-weight:600;}
+.pAppInfo {text-align:justify; width:460px; font-size:12px;}
+.divMerchantTerms {font-size:12px; font-weight:500; text-align:justify; width:215px; color:#444444;}
 
 #divAppImages {width:700px; height:320px; overflow-x:scroll; overflow-y:hidden; padding-bottom:10px; white-space:nowrap;}
+#tdAppDetails {padding-top:32px;} 
 #divAppInfo {width:100px; padding-top:32px;} 
 #divAppDetails {width:270px; font-size:0.6em; text-align:justify;}
 #divAppStoreBtn {margin-top:32px;}
 
-#divJobStats {margin-top:20px; color:#0176EA;}
-.tdJobStats {vertical-align:top; font-size:0.6em; color:#0176EA;}
-.tdMerchantInfo {font-size:0.6em;}
+#divJobStats {margin-top:10px; color:#7A7A7A; margin-bottom:20px;}
+.tdJobStats {vertical-align:top; font-size:0.6em; font-weight:600; color:#0176EA;}
+.tdMerchantInfo {font-size:10px; color:#333333; font-weight:700; line-height:1.5em;}
 
 #divProfileContent {width:700px; margin-top:30px; font-size:0.6em;}
 .spnProfileInfo {font-size:0.6em;}
 .divSteps {font-size:0.6em;}
 #divJobComplete {font-size:0.6em;}
-#divAppStoreRating {font-size:0.4em;}
+#spnAppStoreRating {font-size:12px; font-weight:600; color:#7A7A7A; padding-left:10px;}
 
+.tdSubItem {width:230px; padding-right:40px; vertical-align:top;}
+.spnAppName {padding-left:4px; font-size:18px; font-weight:600; color:#0176EA;}
+.spnSubItem {font-size:11px;}
+#divLoadMore {padding-top:80px; padding-bottom:40px;}
 
 #divJobTerms {width:480px;}
 #divGlobalTerms {width:480px;}
+
+
+
+#divSignup {width:420px; text-align:center;}

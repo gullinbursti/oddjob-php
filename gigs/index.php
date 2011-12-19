@@ -1,7 +1,13 @@
 <?php ob_start();
 
 require "./_consts/db_consts.php";
-require "./_consts/fb_consts.php";
+//require "./_consts/fb_consts.php";
+
+$APP_ID = '139514356142393';
+$APP_SECRET = 'b5c9eb235ba09cd7ad58ca99770dca55'; 
+$app_url = 'http://apps.facebook.com/oddjobb/';
+
+$FB_ID = '660042243';  
 
 require './_inc/fb-sdk/facebook.php';
 require './_wrk/mailer.php';
@@ -65,6 +71,7 @@ if ($user) {
 	header("Location: ". $auth_url);
 }  
 
+$job_cnt = 0;
 $query = 'SELECT * FROM `tblJobs` WHERE `isActive` ="Y" LIMIT 4;';
 $job_arr = mysql_query($query);
 			
@@ -98,15 +105,9 @@ function calcRating($j_id) {
 
 
 function writeStars($r_amt) {
-	for ($i=1; $i<=5; $i++) {
-		
-		if ($r_amt < $i)
-			$img_src = "star_empty.png";
-		
-		else
-			$img_src = "star_filled.png";
-		
-		echo ("<img id=\"imgStar_". $job_id ."_". $i ."\" name=\"imgStar_". $job_id ."_". $i ."\" src=\"./img/". $img_src ."\" width=\"16\" height=\"16\" />");	
+	for ($i=1; $i<=round($r_amt); $i++) {
+		$img_src = "grayStar.png";
+		echo ("<img id=\"imgStar_". $job_id ."_". $i ."\" name=\"imgStar_". $job_id ."_". $i ."\" src=\"./img/". $img_src ."\" width=\"17\" height=\"17\" />");	
 	}
 }
 
@@ -144,8 +145,8 @@ function writeStars($r_amt) {
 				location.href = "./view.php?jID="+jID;
 			}
 		
-			function jobReview(jID) {
-				location.href = "./review.php?jID="+jID;
+			function jobRecommend(jID) {
+				location.href = "./recommend.php?jID="+jID;
 			}
 			
 			function jobChallenge(jID) {
@@ -182,18 +183,17 @@ function writeStars($r_amt) {
 						$type_name = $type_row[0];							
 							
 					// retrieve app info						
-					$query = 'SELECT `name`, `itunes_id`, `youtube_id`, `ico_url`, `img_url`, `itunes_score` FROM `tblApps` WHERE `id` ='. $job_row['app_id'] .';';
+					$query = 'SELECT `name`, `itunes_id`, `youtube_id`, `ico_url`, `img_url`, `itunes_score`, `info` FROM `tblApps` WHERE `id` ='. $job_row['app_id'] .';';
 					$app_row = mysql_fetch_row(mysql_query($query));
 	
 					if ($app_row) {
 						$app_name = $app_row[0];
-						$app_id = $app_row[1];
+						$itunes_id = $app_row[1];
 						$youtube_id = $app_row[2];
-						//$appStore_json = json_decode(file_get_contents("http://itunes.apple.com/lookup?id=". $app_id .""));
 					}
 					
 					// retrieve offer
-					$query = 'SELECT `id`, `name`, `slots`, `longitude`, `latitude` FROM `tblOffers`WHERE `tblOffers`.`id` ='. $job_row['offer_id'] .';';
+					$query = 'SELECT `id`, `name`, `slots`, `longitude`, `latitude`, `terms` FROM `tblOffers`WHERE `tblOffers`.`id` ='. $job_row['offer_id'] .';';
 					$offer_row = mysql_fetch_row(mysql_query($query));
 					
 					if ($offer_row) {
@@ -245,60 +245,86 @@ function writeStars($r_amt) {
 						$like_tot = mysql_num_rows($likes_res);
 						while ($like_row = mysql_fetch_array($likes_res, MYSQL_BOTH))
 							$like_score++;
-					} ?>
+					} 
 					
-					<table cellpadding="0" cellspacing="0" border="0">					
-						<tr><td colspan="2"><?php include './_inc/title.php'; ?></td></tr>
-						<tr><td valign="top">
-					<?php switch ($job_row['action_id']) {
+					if ($job_cnt == 0) {
+					?>
+					
+						<table cellpadding="0" cellspacing="0" border="0">					
+							<tr><td colspan="2"><?php include './_inc/title.php'; ?></td></tr>
+							<tr><td valign="top">
+						<?php switch ($job_row['action_id']) {
 						
-						// watch
-						case "9": ?>
-							<a href="./view.php?jID=<?php echo ($job_id); ?>"><img src="http://img.youtube.com/vi/<?php echo ($youtube_id); ?>/0.jpg" width="460" height="280" title="<?php echo ($app_name); ?>" alt="<?php echo ($app_name); ?>" /></a>
-							<?php break;
+							// watch
+							case "9": ?>
+								<a href="./view.php?jID=<?php echo ($job_id); ?>"><img src="http://img.youtube.com/vi/<?php echo ($youtube_id); ?>/0.jpg" width="460" height="280" title="<?php echo ($app_name); ?>" alt="<?php echo ($app_name); ?>" /></a>
+								<?php break;
 						
-						// recommend   						
-						case "10": 						
-							$rating_ave = calcRating($job_id); ?>
-							<div id="divReview">
-								<a href="./recommend.php?jID=<?php echo ($job_id); ?>"><img src="<?php echo($app_row[4]); ?>" width="460" height="280" title="<?php echo($app_name); ?>" alt="<?php echo($app_name); ?>" /></a>
-								<!-- <div id="divRatings"><?php writeStars($rating_ave); ?></div> -->
-								<!-- <div id="divRatingScore">Average Score: <?php echo ($rating_ave); ?></div> -->
-							</div>							
-						    <?php break;
+							// recommend   						
+							case "10": 						
+								$rating_ave = calcRating($job_id); ?>
+								<div id="divReview">
+									<a href="./recommend.php?jID=<?php echo ($job_id); ?>"><img src="<?php echo($app_row[4]); ?>" width="460" height="280" title="<?php echo($app_name); ?>" alt="<?php echo($app_name); ?>" /></a>
+								</div>							
+							    <?php break;
 						
-						// challenge	
-						case "11": ?>
-						    <div id="divReview">
-								<a href="./challenge.php?jID=<?php echo ($job_id); ?>"><img src="<?php echo($app_row[4]); ?>" width="460" height="280" title="<?php echo($app_name); ?>" alt="<?php echo($app_name); ?>" /></a>
+							// challenge	
+							case "11": ?>
+							    <div id="divReview">
+									<a href="./challenge.php?jID=<?php echo ($job_id); ?>"><img src="<?php echo($app_row[4]); ?>" width="460" height="280" title="<?php echo($app_name); ?>" alt="<?php echo($app_name); ?>" /></a>
+								</div>
+								<?php break;
+						} ?>
+							<div id="divJobStats">
+								<table cellpadding="0" cellspacing="0" border="0" width="100%"><tr>
+									<td width="100" class="tdSocialStats"><img src="./img/iconThumbsUp.png" width="17" height="17" alt="" title="" /><?php echo (rand(5, 200)); ?> likes</td>
+									<td width="100" class="tdSocialStats"><img src="./img/iconComments.png" width="24" height="20" alt="" title="" /><?php echo (rand(5, 50)); ?> comments</td>
+									<td width="180" align="right"><img src="./img/iconFriends.png" width="22" height="18" alt="" title="" /><?php
+										$friendID_arr = array_rand($friend_arr, 3);
+										for ($i=0; $i<3; $i++)
+											echo ("<a href=\"http://facebook.com/profile.php?id=". $friendID_arr[$i] ."\" target=\"_blank\"><img id=\"imgFBAvatar\" src=\"http://graph.facebook.com/". $friendID_arr[$i] ."/picture\" width=\"32\" height=\"32\" border=\"0\" title=\"". $friend_arr[$friendID_arr[$i]] ."\" alt=\"". $friend_arr[$friendID_arr[$i]] ."\" /></a>");	?>
+									</td>
+									<td width="14" />
+								</tr>
+								<tr><td colspan="4" id="tdAppDetails">
+									<p><span class="spnAppName"><?php echo ($app_name); ?> - iOS</span></p>
+									<p><?php writeStars($app_row[5]); ?><span id="spnAppStoreRating"><?php echo(round($app_row[5])); ?>.0 stars</span></p>
+									<p class="pAppInfo"><?php echo (str_replace('\n', ' ', str_replace('\"', '"', substr($app_row[6], 0, 500)))); ?>…</p>
+									<p><a href="http://itunes.apple.com/us/app/id<?php echo($itunes_id); ?>?mt=8" target="_blank"><img src="./img/badgeAppStore.png" width="97" height="33" title="View <?php echo ($app_name); ?> on the iTunes Store" alt="View <?php echo ($app_name); ?> on the iTunes Store" border="0" /></a></p>
+								</td></tr>
+								</table>	
 							</div>
-							<?php break;
-					} ?>
-						<!-- <div><a href="http://itunes.apple.com/us/app/id<?php echo($app_id); ?>?mt=8" target="_blank"><img src="./img/appStore.png" width="129" height="43" title="View <?php echo ($app_name); ?> on the iTunes Store" alt="View <?php echo ($app_name); ?> on the iTunes Store" /></a></div> -->
-						<div id="divJobStats">
-							<table cellpadding="0" cellspacing="0" border="0" width="100%"><tr>
-								<td width="100" class="tdJobStats"><img src="#" width="16" height="16" alt="" title="" /><?php echo (rand(5, 200)); ?> Likes</td>
-								<td width="100" class="tdJobStats"><img src="#" width="16" height="16" alt="" title="" /><?php echo (rand(5, 50)); ?> Comments</td>
-								<td width="180" align="right"><?php
-									$friendID_arr = array_rand($friend_arr, 3);
-									for ($i=0; $i<3; $i++)
-										echo ("<a href=\"http://facebook.com/profile.php?id=". $friendID_arr[$i] ."\" target=\"_blank\"><img id=\"imgFBAvatar\" src=\"http://graph.facebook.com/". $friendID_arr[$i] ."/picture\" width=\"32\" height=\"32\" border=\"0\" title=\"". $friend_arr[$friendID_arr[$i]] ."\" alt=\"". $friend_arr[$friendID_arr[$i]] ."\" /></a>");	?>
-								</td>
-								<td width="14" />
-							</tr>
-							<tr><td colspan="4">
-								<p><?php echo ($app_name); ?> - iOS</p>
-								<p><?php writeStars($app_row[5]); echo($app_row[5]); ?> stars</p>
-							</td></tr>
-							</table>	
-						</div>
-						</td><td valign="top"><?php include './_inc/merchant.php'; ?></td></tr>
-					</table>
+							</td><td valign="top"><?php include './_inc/merchant.php'; ?></td></tr>
+							<tr><td colspan="2"><hr /><p /></td></tr>
+						</table>
+						<table cellpadding="0" cellspacing="0" border="0" width="700"><tr>
+					<?php } else { ?>
+						<td class="tdSubItem">
+							<img src="<?php echo ($merchant_img); ?>" width="150" height="150" />
+							<p><span class="spnAppName"><?php echo ($job_name); ?></span></p>
+							<p><span class="spnSubItem"><?php echo ($type_name ." ". $app_name ." for a ". $job_name); ?></span></p>
+							<p /><p><?php switch ($job_row['action_id']) {
+								case "9":
+							   		echo ("<input type=\"button\" value=\"Take Job\" width=\"200\" onclick=\"jobWatch(". $job_id .");\" /></div><p />");
+									break;
+	
+								case "10":
+							   		echo ("<input type=\"button\" value=\"Take Job\" width=\"200\" onclick=\"jobRecommend(". $job_id .");\" /></div><p />");
+									break;
+		
+							    case "11":
+							   		echo ("<input type=\"button\" value=\"Take Job\" width=\"200\" onclick=\"jobChallenge(". $job_id .");\" /></div><p />");
+									break;
+							} ?></p>  
+						</td>
+					<?php } ?>
 
-				<?php } $job_id = 0; ?>
+				<?php $job_cnt++; } $job_id = 0; ?>
+				        </tr></table>
+				<div id="divLoadMore" align="center"><input type="button" value="More Jobs" /></div>
 			</div>
+			<?php include './_inc/footer.php'; ?>
 		</div>
-		<?php include './_inc/footer.php'; ?>
 	</div></body>
 </html>
 
