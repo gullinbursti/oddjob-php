@@ -1,31 +1,49 @@
 html, body {margin:0px; padding:0px; font-family: 'Open Sans', sans-serif; background-color:#ffffff; font-size:0.1em;}
-#divMainWrapper {width:100%; margin:0px; padding:0px;} /*background-image:url('./images/background.jpg'); background-repeat:no-repeat; background-attachment:fixed; background-position:bottom right;} */
+#divMainWrapper {width:100%; margin:0px; padding:0px; background-image:url('../img/background.jpg');}
 			
-#tblHeaderTout {width:100%; height:32px; background-color:#7B7B7B; text-align:left; padding:2px; color:#E3E3E3; font-size:0.1em; font-weight:600;}
-#tblHeaderTout a, #tdHeaderTout a:active, #tdHeaderTout a:visited {color:#a4a4a4; text-decoration:none;} 
-#tblHeaderTout a:hover {color:#a4a4a4; text-decoration:underline;}
-#tblFooterTout {width:100%; height:32px; background-color:#7B7B7B; text-align:center; padding:2px; color:#E3E3E3; font-size:0.1em; font-weight:600;}
-#divNotices {width:250px; height:24px; background-color:#C9C9C9; vertical-align:middle; text-align:center; border:1px solid #A0A0A0;}
+#tblHeaderTout {width:100%; height:45px; background-image:url('../img/headerBg.png'); text-align:center; padding:10px; color:#B1B1B1; font-size:10px; font-weight:600;}
+#tblHeaderTout a, #tdHeaderTout a:active, #tdHeaderTout a:visited {color:#0176EA; text-decoration:none;} 
+#tblHeaderTout a:hover {color:#0176EA; text-decoration:underline;}
+#spnHeaderWrapper {width:700px; vertical-align:middle;}
+#imgOddJob {padding-right:320px;}
 
-#divTitle {width:480px; text-align:left; margin-top:30px; margin-bottom:30px;}
-#spnJobTitle {padding-left:4px; font-size:0.9em;}
-#spnJobSubTitle {padding-left:4px; font-size:0.8em;}
+#tblSubHeaderTout {width:100%; height:80px; background-image:url('../img/header2Bg.png'); text-align:center; padding:20px; color:#E3E3E3; font-size:12px; font-weight:600;}
+#tblSubHeaderTout a, #tblSubHeaderTout a:active, #tblSubHeaderTout a:visited {color:#5D5D5D; text-decoration:none;} 
+#tblSubHeaderTout a:hover {color:#5D5D5D; text-decoration:underline;}
+#spnSubHeaderWrapper {width:700px; vertical-align:middle;}
+#imgAvatar {width:39px; height:39px; border:1px solid #7A7A7A; margin-right:20px;}
+.spnSubHeaderLinks {padding-right:32px;}
+#spnSubHeaderSettings {padding-left:230px;}
+
+#tblFooterTout {width:100%; height:32px; background-color:#7B7B7B; text-align:center; padding:2px; color:#E3E3E3; font-size:0.1em; font-weight:600;}
+#divNotices {display:none; width:250px; height:24px; background-color:#C9C9C9; vertical-align:middle; text-align:center; border:1px solid #A0A0A0;}
+
+#divCategories {float:left; width:160px; height:290px; margin-top:30px; background-color:#FFFDCD; border:1px solid #999999; font-size:14px; font-weight:600;}
+#divCategories p {padding-left:12px; padding-bottom:10px; border-bottom:1px solid #999999;}
+
+#divTitle {width:700px; text-align:left; margin-top:30px; margin-bottom:30px; color:#0176EA;}
+#spnJobTitle {padding-left:4px; font-size:18px; color:#0176EA;}
+#spnJobSubTitle {padding-left:4px; font-size:0.8em; color:#666666;}
+
+#imgFBAvatar {width:32px; height:32px; margin-left:20px;}
+
 .divPreview {width:320px;}
-#divComment {width:480px; text-align:left; margin-top:40px;}
+#divComment {width:700px; text-align:left; margin-top:40px;}
 #spnAppInfo {font-size:0.6em; padding-left:4px;}
 #divFBUsers {width:620px; height:64px; margin-top:32px; border-top:1px solid #A0A0A0;}
-#imgFBAvatar {padding-right:16px;}
 
-#divAppImages {width:480px; height:320px; overflow-x:scroll; overflow-y:hidden; padding-bottom:10px; white-space:nowrap;}
+.divMerchantTerms {font-size:10px; text-align:justify; width:215px;}
+
+#divAppImages {width:700px; height:320px; overflow-x:scroll; overflow-y:hidden; padding-bottom:10px; white-space:nowrap;}
 #divAppInfo {width:100px; padding-top:32px;} 
 #divAppDetails {width:270px; font-size:0.6em; text-align:justify;}
 #divAppStoreBtn {margin-top:32px;}
 
-#divJobStats {margin-top:20px;}
-.tdJobStats {vertical-align:middle; font-size:0.6em;}
+#divJobStats {margin-top:20px; color:#0176EA;}
+.tdJobStats {vertical-align:top; font-size:0.6em; color:#0176EA;}
 .tdMerchantInfo {font-size:0.6em;}
 
-#divProfileContent {width:480px; margin-top:30px; font-size:0.6em;}
+#divProfileContent {width:700px; margin-top:30px; font-size:0.6em;}
 .spnProfileInfo {font-size:0.6em;}
 .divSteps {font-size:0.6em;}
 #divJobComplete {font-size:0.6em;}

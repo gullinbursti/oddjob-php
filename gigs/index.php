@@ -65,7 +65,7 @@ if ($user) {
 	header("Location: ". $auth_url);
 }  
 
-$query = 'SELECT * FROM `tblJobs` WHERE `isActive` ="Y";';
+$query = 'SELECT * FROM `tblJobs` WHERE `isActive` ="Y" LIMIT 4;';
 $job_arr = mysql_query($query);
 			
 // 
@@ -157,48 +157,65 @@ function writeStars($r_amt) {
 	
 	<body><div id="divMainWrapper">
 		<?php include './_inc/header.php'; ?>
+		<div id="divCategories" style="display:none;">
+			<p>Today's Jobs</p>
+			<p>Food &amp; Drink</p>
+			<p>Games &amp; Music</p>
+			<p>Tickets</p>
+			<p>Coupons</p>
+			<p>Other</p>
+		</div>
 		<div align="center">			
 			<?php include './_inc/notifications.php'; ?>
 			<div id="divJobList">
 				<?php while ($job_row = mysql_fetch_array($job_arr, MYSQL_BOTH)) {
 					$score = 0;
 					$job_id = $job_row['id'];  
-					$job_name = $job_row['title'];
 					$job_info = $job_row['info'];
-					$slots_tot = $job_row['slots'];
-					$job_long = $job_row['longitude'];
-					$job_lat = $job_row['latitude'];
-					$merchant_id = $job_row['merchant_id'];
+					$offer_id = $job_row['offer_id'];
 	
 					// retrieve job type
-			    	$query = 'SELECT `name` FROM `tblJobTypes` WHERE `id` ='. $job_row['type_id'] .';';
+			    	$query = 'SELECT `name` FROM `tblActionTypes` WHERE `id` ='. $job_row['action_id'] .';';
 					$type_row = mysql_fetch_row(mysql_query($query));
 	
 					if ($type_row)
 						$type_name = $type_row[0];							
 							
 					// retrieve app info						
-					$query = 'SELECT `name`, `itunes_id`, `youtube_id` FROM `tblApps` WHERE `id` ='. $job_row['app_id'] .';';
+					$query = 'SELECT `name`, `itunes_id`, `youtube_id`, `ico_url`, `img_url`, `itunes_score` FROM `tblApps` WHERE `id` ='. $job_row['app_id'] .';';
 					$app_row = mysql_fetch_row(mysql_query($query));
 	
 					if ($app_row) {
 						$app_name = $app_row[0];
 						$app_id = $app_row[1];
 						$youtube_id = $app_row[2];
-						$appStore_json = json_decode(file_get_contents("http://itunes.apple.com/lookup?id=". $app_id .""));
+						//$appStore_json = json_decode(file_get_contents("http://itunes.apple.com/lookup?id=". $app_id .""));
 					}
 					
+					// retrieve offer
+					$query = 'SELECT `id`, `name`, `slots`, `longitude`, `latitude` FROM `tblOffers`WHERE `tblOffers`.`id` ='. $job_row['offer_id'] .';';
+					$offer_row = mysql_fetch_row(mysql_query($query));
+					
+					if ($offer_row) {
+						$job_name = $offer_row[1];
+						$slots_tot = $offer_row[2];
+						$job_long = $offer_row[3];
+						$job_lat = $offer_row[4];
+					}
+					
+					
 					// retrieve merchant
-					$query = 'SELECT `name`, `address`, `city`, `state`, `zip`, `phone` FROM `tblMerchants` WHERE `id` ='. $job_row['merchant_id'] .';';
+					$query = 'SELECT `tblMerchants`.`id`, `tblMerchants`.`name`, `tblMerchants`.`address`, `tblMerchants`.`city`, `tblMerchants`.`state`, `tblMerchants`.`zip`, `tblMerchants`.`phone` FROM `tblMerchants` INNER JOIN `tblOffers` ON `tblMerchants`.`id` = `tblOffers`.`merchant_id` WHERE `tblOffers`.`id` ='. $job_row['offer_id'] .';';
 					$merchant_row = mysql_fetch_row(mysql_query($query));
 	
 					if ($merchant_row) {
-						$merchant_name = $merchant_row[0];
-						$merchant_addr = $merchant_row[1];
-						$merchant_city = $merchant_row[2];
-						$merchant_state = $merchant_row[3];
-						$merchant_zip = $merchant_row[4];
-						$merchant_phone = $merchant_row[5];
+						$merchant_id = $merchant_row[0];
+						$merchant_name = $merchant_row[1];
+						$merchant_addr = $merchant_row[2];
+						$merchant_city = $merchant_row[3];
+						$merchant_state = $merchant_row[4];
+						$merchant_zip = $merchant_row[5];
+						$merchant_phone = $merchant_row[6];
 						
 						$query = 'SELECT `tblImages`.`url` FROM `tblImages` INNER JOIN `tblMerchantsImages` ON `tblImages`.`id` = `tblMerchantsImages`.`image_id` WHERE `tblMerchantsImages`.`merchant_id` = "'. $merchant_id .'" AND `tblImages`.`type_id` = "8";';
 						$img_row = mysql_fetch_row(mysql_query($query));
@@ -217,7 +234,7 @@ function writeStars($r_amt) {
 			    		$img_url = $img_row[1];
 
        
-					$query = 'SELECT `tblLikes`.`name` FROM `tblLikes` INNER JOIN `tblJobsLikes` ON `tblLikes`.`id` = `tblJobsLikes`.`like_id` WHERE `tblJobsLikes`.`job_id` ="'. $job_id .'";';
+					$query = 'SELECT `tblLikes`.`name` FROM `tblLikes` INNER JOIN `tblOffersLikes` ON `tblLikes`.`id` = `tblOffersLikes`.`like_id` WHERE `tblOffersLikes`.`offer_id` ="'. $job_id .'";';
 					$likes_res = mysql_query($query);
 		
 					// has results
@@ -228,53 +245,60 @@ function writeStars($r_amt) {
 						$like_tot = mysql_num_rows($likes_res);
 						while ($like_row = mysql_fetch_array($likes_res, MYSQL_BOTH))
 							$like_score++;
-					}
+					} ?>
 					
-					?>
 					<table cellpadding="0" cellspacing="0" border="0">					
 						<tr><td colspan="2"><?php include './_inc/title.php'; ?></td></tr>
 						<tr><td valign="top">
-					<?php switch ($job_row['type_id']) {
+					<?php switch ($job_row['action_id']) {
 						
 						// watch
 						case "9": ?>
-							<a href="./view.php?jID=<?php echo ($job_id); ?>"><img src="http://img.youtube.com/vi/<?php echo ($youtube_id); ?>/0.jpg" width="380" height="280" title="<?php echo ($app_name); ?>" alt="<?php echo ($app_name); ?>" /></a>
+							<a href="./view.php?jID=<?php echo ($job_id); ?>"><img src="http://img.youtube.com/vi/<?php echo ($youtube_id); ?>/0.jpg" width="460" height="280" title="<?php echo ($app_name); ?>" alt="<?php echo ($app_name); ?>" /></a>
 							<?php break;
 						
 						// recommend   						
 						case "10": 						
-							$rating_ave = calcRating($job_id);
-							$screenshot_arr = $appStore_json->results[0]->screenshotUrls; ?>
+							$rating_ave = calcRating($job_id); ?>
 							<div id="divReview">
-								<a href="./recommend.php?jID=<?php echo ($job_id); ?>"><img src="<?php echo($screenshot_arr[0]); ?>" width="380" height="280" title="<?php echo($app_name); ?>" alt="<?php echo($app_name); ?>" /></a>
+								<a href="./recommend.php?jID=<?php echo ($job_id); ?>"><img src="<?php echo($app_row[4]); ?>" width="460" height="280" title="<?php echo($app_name); ?>" alt="<?php echo($app_name); ?>" /></a>
 								<!-- <div id="divRatings"><?php writeStars($rating_ave); ?></div> -->
 								<!-- <div id="divRatingScore">Average Score: <?php echo ($rating_ave); ?></div> -->
 							</div>							
 						    <?php break;
 						
 						// challenge	
-						case "11": 
-							$screenshot_arr = $appStore_json->results[0]->screenshotUrls; ?>
+						case "11": ?>
 						    <div id="divReview">
-								<a href="./challenge.php?jID=<?php echo ($job_id); ?>"><img src="<?php echo($screenshot_arr[0]); ?>" width="380" height="280" title="<?php echo($app_name); ?>" alt="<?php echo($app_name); ?>" /></a>
+								<a href="./challenge.php?jID=<?php echo ($job_id); ?>"><img src="<?php echo($app_row[4]); ?>" width="460" height="280" title="<?php echo($app_name); ?>" alt="<?php echo($app_name); ?>" /></a>
 							</div>
 							<?php break;
 					} ?>
 						<!-- <div><a href="http://itunes.apple.com/us/app/id<?php echo($app_id); ?>?mt=8" target="_blank"><img src="./img/appStore.png" width="129" height="43" title="View <?php echo ($app_name); ?> on the iTunes Store" alt="View <?php echo ($app_name); ?> on the iTunes Store" /></a></div> -->
-						</td><td valign="top"><?php include './_inc/merchant.php'; ?></td></tr>
-					
-						<tr><td><div id="divJobStats">
+						<div id="divJobStats">
 							<table cellpadding="0" cellspacing="0" border="0" width="100%"><tr>
 								<td width="100" class="tdJobStats"><img src="#" width="16" height="16" alt="" title="" /><?php echo (rand(5, 200)); ?> Likes</td>
 								<td width="100" class="tdJobStats"><img src="#" width="16" height="16" alt="" title="" /><?php echo (rand(5, 50)); ?> Comments</td>
-								<td width="180" align="right"><input type="button" id="btnTakeJob_<?php echo($job_id); ?>" name="btnTakeJob_<?php echo($job_id); ?>" value="Take Job" onclick="takeJob(<?php echo($$job_row['type_id']); ?>, <?php echo($job_id); ?>)" /><input type="button" id="btnShare_<?php echo($job_id); ?>" name="btnShare_<?php echo($job_id); ?>" value="Share Job" onclick="shareJob(<?php echo($job_id); ?>);" /></td>
-							</tr></table>	
-						</div></td><td /></tr>
+								<td width="180" align="right"><?php
+									$friendID_arr = array_rand($friend_arr, 3);
+									for ($i=0; $i<3; $i++)
+										echo ("<a href=\"http://facebook.com/profile.php?id=". $friendID_arr[$i] ."\" target=\"_blank\"><img id=\"imgFBAvatar\" src=\"http://graph.facebook.com/". $friendID_arr[$i] ."/picture\" width=\"32\" height=\"32\" border=\"0\" title=\"". $friend_arr[$friendID_arr[$i]] ."\" alt=\"". $friend_arr[$friendID_arr[$i]] ."\" /></a>");	?>
+								</td>
+								<td width="14" />
+							</tr>
+							<tr><td colspan="4">
+								<p><?php echo ($app_name); ?> - iOS</p>
+								<p><?php writeStars($app_row[5]); echo($app_row[5]); ?> stars</p>
+							</td></tr>
+							</table>	
+						</div>
+						</td><td valign="top"><?php include './_inc/merchant.php'; ?></td></tr>
 					</table>
 
-				<?php } ?>
+				<?php } $job_id = 0; ?>
 			</div>
 		</div>
+		<?php include './_inc/footer.php'; ?>
 	</div></body>
 </html>
 

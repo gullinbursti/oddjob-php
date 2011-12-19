@@ -73,73 +73,96 @@ if (isset($_GET['jID'])) {
 	$device_id = $user_row[0];
 	
 	// retrieve job info
-	$query = 'SELECT `title`, `info`, `slots`, `object_id`, `longitude`, `latitude`, `app_id`, `type_id`, `merchant_id` FROM `tblJobs` WHERE `id` ='. $job_id .';';
+	$query = 'SELECT `action_id`, `offer_id`, `app_id` FROM `tblJobs` WHERE `id` ='. $job_id .';';
 	$job_row = mysql_fetch_row(mysql_query($query));
 	
 	// has result
 	if ($job_row) {
-		$job_name = $job_row[0];
-		$job_info = $job_row[1];
-		$slots_tot = $job_row[2];
-		$job_long = $job_row[4];
-		$job_lat = $job_row[5];
-		$merchant_id = $job_row[8];
-		
-		if ($job_row[7] != "9")
+		if ($job_row[0] != "9")
 			header('Location: index.php');
 		
 		// retrieve job type
-    	$query = 'SELECT `name` FROM `tblJobTypes` WHERE `id` ='. $job_row[7] .';';
+    	$query = 'SELECT `name` FROM `tblActionTypes` WHERE `id` ='. $job_row[0] .';';
 		$type_row = mysql_fetch_row(mysql_query($query));
 		
 		if ($type_row)
-			$type_name = $type_row[0];							
+			$type_name = $type_row[0];
+			
+		
+		// retrieve offer
+		$query = 'SELECT `id`, `name`, `slots`, `longitude`, `latitude` FROM `tblOffers`WHERE `tblOffers`.`id` ='. $job_row[1] .';';
+		$offer_row = mysql_fetch_row(mysql_query($query));
+		
+		if ($offer_row) {
+			$job_name = $offer_row[1];
+			$slots_tot = $offer_row[2];
+			$job_long = $offer_row[3];
+			$job_lat = $offer_row[4];
+		}
+		
+		$query = 'SELECT `score` FROM `tblJobRatings` WHERE `job_id` ="'. $job_id .'";';
+		$rating_res = mysql_query($query);
+			
+		// has results
+		$rating_tot = 0;
+		$rating_ave = 0;
+		
+		if (mysql_num_rows($rating_res)) {
+			$rating_tot = mysql_num_rows($rating_res);
+			while ($rating_row = mysql_fetch_array($rating_res, MYSQL_BOTH))
+				$rating_ave += $rating_row[0];
+				
+			$rating_ave /= $rating_tot;
+			$rating_ave = round($rating_ave);
+		}
+		
+		
+		$cTypes_arr = array();
+		$query = 'SELECT `id`, `name` FROM `tblAppChallengeTypes`;';
+		$challengeTypes_res = mysql_query($query);
+			
+	    if (mysql_num_rows($challengeTypes_res)) {
+			while ($row = mysql_fetch_array($challengeTypes_res, MYSQL_BOTH)) {
+				$cTypes_arr[$row['id']] = $row['name']; 
+			}
+		}
+		
+		
 								
 		// retrieve app info						
-		$query = 'SELECT `name`, `itunes_id`, `youtube_id` FROM `tblApps` WHERE `id` ='. $job_row[6] .';';
+		$query = 'SELECT `name`, `itunes_id`, `youtube_id`, `ico_url`, `img_url`, `itunes_score`, `fb_object`, `info` FROM `tblApps` WHERE `id` ='. $job_row[2] .';';
 		$app_row = mysql_fetch_row(mysql_query($query));
 		
 		if ($app_row) {
 			$app_name = $app_row[0];
 			$app_id = $app_row[1];
 			$youtube_id = $app_row[2];
-			$appStore_json = json_decode(file_get_contents("http://itunes.apple.com/lookup?id=". $app_id .""));
-			$app_rate = round($appStore_json->results[0]->averageUserRating);
+			$img_url = $app_row[4];
+			$app_rate = round($app_row[5]);
+			$obj_name = $app_row[6];
 		}
-    	
-		// retrieve images
-		$query = 'SELECT `tblImages`.`id`, `tblImages`.`url` FROM `tblImages` INNER JOIN `tblJobsImages` ON `tblImages`.`id` = `tblJobsImages`.`image_id` WHERE `tblJobsImages`.`job_id` = "'. $job_id .'" AND type_id = "4";';
-		$img_row = mysql_fetch_row(mysql_query($query));
 		
-		if ($img_row)
-    		$img_url = $img_row[1];
-
-        
-		$query = 'SELECT `name` FROM `tblObjects` WHERE `id` ='. $job_row[3] .';';
-		$obj_row = mysql_fetch_row(mysql_query($query));
-		$obj_name = $obj_row[0]; 
-        
-
-		 // retrieve merchant
-		$query = 'SELECT `name`, `address`, `city`, `state`, `zip`, `phone` FROM `tblMerchants` WHERE `id` ='. $merchant_id .';';
+		// retrieve merchant
+		$query = 'SELECT `tblMerchants`.`id`, `tblMerchants`.`name`, `tblMerchants`.`address`, `tblMerchants`.`city`, `tblMerchants`.`state`, `tblMerchants`.`zip`, `tblMerchants`.`phone` FROM `tblMerchants` INNER JOIN `tblOffers` ON `tblMerchants`.`id` = `tblOffers`.`merchant_id` WHERE `tblOffers`.`id` ='. $job_row[1] .';';
 		$merchant_row = mysql_fetch_row(mysql_query($query));
 
 		if ($merchant_row) {
-			$merchant_name = $merchant_row[0];
-			$merchant_addr = $merchant_row[1];
-			$merchant_city = $merchant_row[2];
-			$merchant_state = $merchant_row[3];
-			$merchant_zip = $merchant_row[4];
-			$merchant_phone = $merchant_row[5];
+			$merchant_id = $merchant_row[0];
+			$merchant_name = $merchant_row[1];
+			$merchant_addr = $merchant_row[2];
+			$merchant_city = $merchant_row[3];
+			$merchant_state = $merchant_row[4];
+			$merchant_zip = $merchant_row[5];
+			$merchant_phone = $merchant_row[6];
 			
 			$query = 'SELECT `tblImages`.`url` FROM `tblImages` INNER JOIN `tblMerchantsImages` ON `tblImages`.`id` = `tblMerchantsImages`.`image_id` WHERE `tblMerchantsImages`.`merchant_id` = "'. $merchant_id .'" AND `tblImages`.`type_id` = "8";';
 			$img_row = mysql_fetch_row(mysql_query($query));
 
 			if ($img_row)
     			$merchant_img = $img_row[0];
-		}
+		} 
 		
-
+		/*
 		$query = 'SELECT `tblLikes`.`name` FROM `tblLikes` INNER JOIN `tblJobsLikes` ON `tblLikes`.`id` = `tblJobsLikes`.`like_id` WHERE `tblJobsLikes`.`job_id` ="'. $job_id .'";';
 		$likes_res = mysql_query($query);
 			
@@ -152,9 +175,9 @@ if (isset($_GET['jID'])) {
 			while ($like_row = mysql_fetch_array($likes_res, MYSQL_BOTH))
 				$like_score++;
 		}
-		//echo ($like_tot);
+		*/
 	}
-}
+} 
 
 
 function actionJobPost($fb, $j_id, $action, $object) {
@@ -206,9 +229,16 @@ function actionJobPost($fb, $j_id, $action, $object) {
 		
 	    <title>Odd Job :: <?php echo($type_name ." ". $app_name)?></title>
 		<link href="./css/screen.css" rel="stylesheet" type="text/css" media="screen">
+		<link href="./css/friendFinder.css" rel="stylesheet" type="text/css" media="screen" />
 		
-		<script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
-		<script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery.validate/1.7/jquery.validate.min.js"></script>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+		<script type="text/javascript" src="./js/friendFinder.js"></script>
+		<script type="text/javascript">
+		  $(function() {
+		      var friends = <?php echo json_encode($facebook->api('/me/friends')); ?>;
+		      $('#friend-finder').friendFinder(friends);
+		  });
+		</script>
 	    
 		<script type="text/javascript">
 		   /* $(document).ready(function() {
@@ -255,11 +285,12 @@ function actionJobPost($fb, $j_id, $action, $object) {
 				    <div><a href="#">Replay Video</a></div>
 					<div>Did you like this trailer?</div>
 					<div>Share this trailer with your friends
-					<div><?php
-						$friendID_arr = array_rand($friend_arr, 3);
-						for ($i=0; $i<3; $i++)
-							echo ("<a href=\"http://facebook.com/profile.php?id=". $friendID_arr[$i] ."\" target=\"_blank\"><img id=\"imgFBAvatar\" src=\"http://graph.facebook.com/". $friendID_arr[$i] ."/picture\" width=\"48\" height=\"48\" border=\"0\" title=\"". $friend_arr[$friendID_arr[$i]] ."\" alt=\"". $friend_arr[$friendID_arr[$i]] ."\" /></a>");	
-					?><input type="button" value="Send Friends Trailer"></div>
+					<div id="friend-finder">
+                        <div id="friend-finder-selected"></div>
+                        <input type="text" class="friend-finder-input" placeholder="Start typing a friend's name..." autocomplete="off" autocorrect="off" />
+                        <input type="hidden" name="friends" value="" />
+                        <ul id="friend-finder-dropdown"></ul>
+                    </div><input type="button" value="Send Friends Trailer"></div>
 				</div>
 				<div style="display:none;"><?php sendPush($device_id, "Install ". $app_name ." for your redemption code"); ?></div>
 			<? } else { ?>

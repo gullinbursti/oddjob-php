@@ -9,4 +9,4 @@
 	}
 	echo("Average Rating ". $app_rate); 
 ?></div>
-<div id="divAppDetails"><?php echo(substr($appStore_json->results[0]->description, 0, 960)); ?>…</div>     
+<div id="divAppDetails"><?php echo(substr($app_row[7], 0, 960)); ?>…</div>     
